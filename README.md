@@ -1,119 +1,135 @@
 # LibReserve — Confab Reservation System
 
-Front-end library **Confab 1–6** room booking for Xavier University (Ateneo de Cagayan). Students submit requests; **staff** approve or reject; **admin** manages accounts. This is a **static site** with **no backend**: all data is stored in the browser via **`localStorage`**.
+Static front-end app for library Confab rooms 1–6 at Xavier University – Ateneo de Cagayan. Students submit reservation requests; library staff approve or reject them; an administrator manages accounts. There is no server or database: everything persists in the browser through `localStorage` (and the current session in `sessionStorage`).
+
+Use a local HTTP URL (for example VS Code Live Server) so testers share one origin and one copy of the data.
 
 ---
 
-## Demo administrator (built-in)
+## Demo sign-in (built-in)
 
-For class demos, a demo admin is **re-injected** into storage when missing (see `js/auth-store.js`).
+If no demo admin exists in storage, the app adds one when users are loaded (`js/auth-store.js`).
 
-| Field    | Value              |
-| -------- | ------------------ |
-| Email    | `admin@xu.edu.ph`  |
-| Password | `LibraryAdmin!24`  |
+> **Email:** `admin@xu.edu.ph`  
+> **Password:** `LibraryAdmin!24`
 
-You can also **create staff accounts** from the admin dashboard (**+ Add staff account**). Staff may use **`@xu.edu.ph`** or **`@my.xu.edu.ph`** (e.g. student assistants). The **first** system administrator (one-time setup via `AdminInit.html`) still must use **`@xu.edu.ph`** only.
+From the admin dashboard you can add real staff accounts (**+ Add staff account**). Staff may use `@xu.edu.ph` or `@my.xu.edu.ph` (for example student assistants). The very first administrator created via `AdminInit.html` must still use `@xu.edu.ph` only.
 
 ---
 
-## What it is
+## Overview
 
-- **Front-end only** — open `LogIn.html` via a local server (e.g. Live Server) so everyone testing shares the **same origin** and sees the same `localStorage`.
-- **Roles:** student, staff, administrator.
-- **Data:** `xu_users` (accounts), `xu_reservations` (requests), plus `sessionStorage` for the signed-in session.
-
----
-
-## Roles and pages
-
-| Role | Main files |
-| ---- | ---------- |
-| **Student** | `StudentDashBoard.html`, `js/student-dashboard.js` — room cards, booking modal, **My reservations**, **Track status**, weekly schedule modal |
-| **Staff** | `StaffDashBoard.html`, `js/staff-dashboard.js` — queue, stats, search, **sort by submission** (oldest ↔ newest), approve/reject, detail modal |
-| **Admin** | `AdminDashBoard.html`, `js/admin-dashboard.js` — create staff, **New password**, activate/deactivate users, student desk access |
-| **Auth** | `LogIn.html`, `Register.html`, `js/login.js`, `js/register.js`, `js/auth-store.js` |
-
-Other entry points: `AdminInit.html` (first admin, when no admin exists), `RegisterStaff.html` (informational; staff are created by admin).
+- Single-page style flow: login, then student, staff, or admin dashboards.
+- Storage keys: `xu_users` (accounts), `xu_reservations` (bookings).
+- Roles: student, staff, administrator (plus optional student “desk access” for the staff portal).
 
 ---
 
-## Rooms and rules
+## Roles and main files
 
-- **Six Confab rooms** with specs (capacity, floor, whiteboard, projector, network) in `js/student-dashboard.js`.
-- **Library hours** (Mon–Fri 8:00–20:00, Sat 8:00–17:00, **Sun closed**) are enforced in **`js/reservation-rules.js`** for booking and staff approval.
-- **Conflicts:** new student requests are blocked only by **approved** overlaps; **pending** does not block. When staff **approve** a request, overlapping **pending** rows are **auto-rejected** with a **`rejectReason`** students can see on **Track** and **My reservations**.
+### Student
 
----
+`StudentDashBoard.html`, `js/student-dashboard.js` — room cards, booking modal, My reservations, Track status, weekly schedule modal.
 
-## Student features
+### Staff
 
-- **Booking:** date/time, purpose, **group members** (numbered lines, hints, line parsing).
-- **My reservations:** status badges, rejection messages, **Cancel** for **pending** or **approved** only if **at least 2 hours before start** → `status: cancelled`, `cancelledAt`, `cancelledBy: "student"`.
-- **Track:** lookup by tracking code; shows **cancelled** and cancellation time when set.
-- **Weekly schedule:** grid shows **approved** occupancy only; **privacy** — each block shows **time** and **“Occupied”** only (no names, purposes, or identifying tooltips).
+`StaffDashBoard.html`, `js/staff-dashboard.js` — queue, statistics, search, sort by submission time, approve/reject, reservation detail modal.
 
----
+### Admin
 
-## Staff features
+`AdminDashBoard.html`, `js/admin-dashboard.js` — create staff, reset staff password, activate/deactivate users, grant or revoke student desk access.
 
-- Table with filters: **All**, **Pending**, **Approved**, **Rejected**, **Cancelled**.
-- **Submitted** sort: **Oldest → newest** or **Newest → oldest**.
-- **Refresh list**; stats include **Cancelled** (student cancellations).
-- Approve path runs **library hours**, **not-past**, and **approved** conflict checks; then **auto-rejects** overlapping pending requests.
-- UI reminds that reservations are **per browser** — use the **same URL/origin** as students (e.g. same Live Server link).
+### Auth and registration
+
+`LogIn.html`, `Register.html`, `js/login.js`, `js/register.js`, `js/auth-store.js`.
+
+### Other pages
+
+`AdminInit.html` — creates the first admin when none exists.  
+`RegisterStaff.html` — explains that staff accounts are created by an admin (no self-service staff registration).
 
 ---
 
-## Admin / accounts
+## Rooms and business rules
 
-- **Demo admin** (`admin@xu.edu.ph`) is ensured by `ensureBuiltinDemoAdminPresent` in `js/auth-store.js` when loading users.
-- **Add staff** from the admin panel: names, email (**`@xu.edu.ph`** or **`@my.xu.edu.ph`**), employee ID, password (policy in `js/register-validation.js`).
-- **New password** for existing staff rows; email trimmed on create; clearer login errors for wrong role or password.
+Room metadata (capacity, floor, equipment, network) lives in `js/student-dashboard.js`.
 
-**Note:** One email cannot be two user rows. If a student already registered on `my.xu`, you cannot add a second **staff** row with the same email; use **Grant desk** on that student or a separate staff email.
+Library hours are enforced in `js/reservation-rules.js` for both booking and approval:
 
----
+- Monday–Friday: 8:00–20:00  
+- Saturday: 8:00–17:00  
+- Sunday: closed  
 
-## Branding and UI
-
-- XU logo panel and **favicon** on white (`images/`).
-- **CSS:** `css/variables.css`, `css/dashboard-common.css`, plus page styles (`student-dashboard.css`, `staff-dashboard.css`, etc.).
-- HTML pages stay lean; shared layout patterns across dashboards.
+**Conflicts:** only an existing approved booking blocks a new student request; pending requests do not block. When staff approve a request, any overlapping pending requests for the same room and time are automatically rejected, with a `rejectReason` shown to students on Track and My reservations.
 
 ---
 
-## Main code files
+## Student experience
 
-| Area | Files |
-| ---- | ----- |
-| Hours, conflicts, auto-reject, student cancel window | `js/reservation-rules.js` |
-| Student UI, schedule, booking, lists, cancel | `js/student-dashboard.js`, `StudentDashBoard.html`, `css/student-dashboard.css` |
-| Desk queue, sort, approve/reject | `js/staff-dashboard.js`, `StaffDashBoard.html`, `css/staff-dashboard.css` |
-| Users, demo admin | `js/auth-store.js` |
-| Admin desk | `js/admin-dashboard.js`, `AdminDashBoard.html` |
-| Email/password validation | `js/register-validation.js` |
-| First admin bootstrap | `js/admin-init.js`, `AdminInit.html` |
-| Shared badges / layout | `css/dashboard-common.css` |
+- **Booking:** date, time, purpose, and group members (numbered lines, hints, and safe line handling).
+- **My reservations:** status, staff rejection messages when applicable, and **Cancel** for pending or approved bookings only if cancellation is at least two hours before the scheduled start. Cancelled rows use `status: "cancelled"`, plus `cancelledAt` and `cancelledBy: "student"`.
+- **Track:** look up a reservation by tracking code; cancelled bookings show cancellation time when available.
+- **Weekly schedule:** shows approved occupancy only. For privacy, blocks show the time range and the label “Occupied”, not names, purposes, or other identifying details.
 
 ---
 
-## Running locally
+## Staff experience
 
-1. Serve the folder over **HTTP** (e.g. VS Code **Live Server**), not only `file://`, so behavior is consistent.
-2. Open **`LogIn.html`**.
-3. Sign in as demo admin or create staff and test student registration on the **same origin**.
-
----
-
-## Support / pitfalls
-
-- **Staff sees no reservations:** different browser, different port, or `file://` vs `http://localhost` → different **`localStorage`**.
-- **Login fails:** wrong **role tile** (Administrator vs Library Staff vs Student), wrong password, or inactive account — admin can set **New password** for staff.
-- **Clearing site data** removes created staff and reservations; the **demo admin** is added again on next load if it was the only way admins existed (see `auth-store.js`).
+- Filter requests: All, Pending, Approved, Rejected, Cancelled.
+- Sort by submission: oldest first or newest first.
+- Refresh the list; statistics include student-cancelled counts.
+- Approval checks library hours, that the slot is not in the past, and conflicts with other approved bookings; then pending overlaps are auto-rejected as described above.
+- The UI notes that data is tied to this browser and URL—students and staff should use the same site address during a demo.
 
 ---
 
-## License / course use
+## Accounts and admin notes
 
-Use and adapt as needed for coursework or demos; adjust credentials and copy for production if you ever move beyond a static demo.
+The demo admin is kept in sync through `ensureBuiltinDemoAdminPresent` in `js/auth-store.js` when `getUsers()` runs.
+
+New staff need a name, email (`@xu.edu.ph` or `@my.xu.edu.ph`), employee ID, and a password that satisfies `js/register-validation.js`. Admins can set a new password for an existing staff row. Staff emails are trimmed on create; login messages distinguish wrong role, wrong password, and missing local account.
+
+Each email may belong to only one user record. If someone already registered as a student on `@my.xu.edu.ph`, you cannot add a second staff row with the same email; use Grant desk on the student record or a different email for a separate staff login.
+
+---
+
+## Branding and styles
+
+XU logo and favicon assets live under `images/`. Shared styling uses `css/variables.css` and `css/dashboard-common.css`; each dashboard has its own CSS module (for example `student-dashboard.css`, `staff-dashboard.css`).
+
+---
+
+## Code map
+
+| Area | Primary files |
+| ---- | ------------- |
+| Hours, overlaps, auto-reject, student cancel window | `js/reservation-rules.js` |
+| Student UI, schedule, booking, lists | `js/student-dashboard.js`, `StudentDashBoard.html`, `css/student-dashboard.css` |
+| Staff desk | `js/staff-dashboard.js`, `StaffDashBoard.html`, `css/staff-dashboard.css` |
+| Users and demo admin | `js/auth-store.js` |
+| Admin UI | `js/admin-dashboard.js`, `AdminDashBoard.html` |
+| Validation rules | `js/register-validation.js` |
+| First-admin bootstrap | `js/admin-init.js`, `AdminInit.html` |
+| Shared layout and badges | `css/dashboard-common.css` |
+
+---
+
+## Run locally
+
+1. Serve the project root over HTTP (recommended: Live Server). Avoid relying on `file://` for demos if you need shared data.
+2. Open `LogIn.html`.
+3. Sign in as the demo admin, add staff if needed, and register or log in as students on the same origin.
+
+---
+
+## Troubleshooting
+
+- **Staff dashboard shows no student requests:** another browser profile, port, or protocol means a different `localStorage` bucket. Align the URL with how students open the app.
+- **Login always fails:** confirm the correct role tile (Administrator, Library Staff, or Student), password, and that the account is active. Staff passwords can be reset from the admin dashboard.
+- **Data disappeared after clearing site data:** local accounts and reservations are gone; the built-in demo admin may reappear on next load per `auth-store.js`, but you must recreate custom staff and bookings.
+
+---
+
+## License and use
+
+Suitable for coursework and demonstrations. Replace demo credentials and tighten policies before any real deployment.
