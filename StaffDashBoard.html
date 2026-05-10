@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Staff Portal | Library Confab Reservation</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1e3a6e;--navy-dark:#162d56;--navy-deeper:#0f2040;--navy-light:#2a4d8f;
+  --off-white:#f0f3f9;--border:#d0d9ec;--text:#1a2a45;--text-soft:#5a6f8f;
+  --text-faint:#9aaabf;--danger:#c0392b;--success:#2d7a4f;--gold:#f5c842;--bg:#eef1f8;
+  --warn:#b8860b;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;color:var(--text)}
+.topbar{background:linear-gradient(135deg,var(--navy-light),var(--navy-deeper));padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:64px;box-shadow:0 2px 20px rgba(14,32,64,0.2);position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:12px}
+.topbar-brand .logo-mark{width:36px;height:36px;background:rgba(255,255,255,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.topbar-brand .logo-mark svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8}
+.topbar-brand span{font-family:'DM Serif Display',serif;font-size:18px;color:#fff}
+.staff-badge{background:rgba(245,200,66,0.25);color:var(--gold);font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:0.05em}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.user-pill{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);padding:7px 14px;border-radius:30px}
+.user-pill .avatar{width:28px;height:28px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--navy-deeper)}
+.user-pill span{font-size:13px;color:rgba(255,255,255,0.9);font-weight:500}
+.logout-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);padding:7px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.85);cursor:pointer;transition:background 0.2s}
+.logout-btn:hover{background:rgba(255,255,255,0.18)}
+.logout-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.main{max-width:1200px;margin:0 auto;padding:2.5rem 2rem}
+.page-header{margin-bottom:2rem;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.page-header h1{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text)}
+.page-header p{font-size:14px;color:var(--text-soft);margin-top:4px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:2rem}
+.stat-card{background:#fff;border-radius:14px;padding:20px 22px;box-shadow:0 2px 10px rgba(14,32,64,0.06)}
+.stat-card .stat-label{font-size:12px;color:var(--text-soft);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em}
+.stat-card .stat-val{font-family:'DM Serif Display',serif;font-size:32px;color:var(--navy)}
+.stat-card .stat-sub{font-size:12px;color:var(--text-faint);margin-top:2px}
+.tabs{display:flex;gap:4px;margin-bottom:2rem;background:#fff;padding:5px;border-radius:12px;box-shadow:0 1px 8px rgba(14,32,64,0.07);width:fit-content}
+.tab{padding:9px 22px;border-radius:8px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-soft);cursor:pointer;transition:all 0.2s;background:transparent}
+.tab.active{background:var(--navy);color:#fff;box-shadow:0 2px 8px rgba(30,58,110,0.25)}
+.filter-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-btn{padding:7px 16px;border-radius:8px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;background:#fff;color:var(--text-soft)}
+.filter-btn.active,.filter-btn:hover{border-color:var(--navy);color:var(--navy);background:var(--off-white)}
+.search-input{padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;background:#fff;color:var(--text);transition:border-color 0.2s;min-width:220px}
+.search-input:focus{border-color:var(--navy)}
+.res-table-wrap{background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(14,32,64,0.07);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--off-white)}
+thead th{padding:12px 16px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-soft)}
+tbody tr{border-top:1px solid var(--off-white);transition:background 0.15s}
+tbody tr:hover{background:var(--off-white)}
+tbody td{padding:14px 16px;font-size:13px;color:var(--text)}
+.status-badge{display:inline-block;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.05em}
+.status-pending{background:rgba(245,200,66,0.15);color:var(--warn)}
+.status-approved{background:rgba(45,122,79,0.1);color:var(--success)}
+.status-rejected{background:rgba(192,57,43,0.1);color:var(--danger)}
+.action-btns{display:flex;gap:6px}
+.btn-approve{padding:5px 12px;background:rgba(45,122,79,0.1);border:1px solid rgba(45,122,79,0.3);color:var(--success);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.btn-approve:hover{background:var(--success);color:#fff}
+.btn-reject{padding:5px 12px;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.25);color:var(--danger);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.btn-reject:hover{background:var(--danger);color:#fff}
+.btn-view{padding:5px 12px;background:var(--off-white);border:1px solid var(--border);color:var(--text-soft);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.btn-view:hover{border-color:var(--navy);color:var(--navy)}
+.empty-state{text-align:center;padding:3rem;color:var(--text-faint)}
+.empty-state svg{width:40px;height:40px;stroke:currentColor;fill:none;stroke-width:1.4;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,20,40,0.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:20px;width:min(520px,100%);box-shadow:0 20px 60px rgba(14,32,64,0.2);animation:slideUp 0.3s ease;max-height:90vh;overflow-y:auto}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{padding:24px 28px 18px;border-bottom:1px solid var(--off-white);display:flex;justify-content:space-between;align-items:center}
+.modal-header h3{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--text-faint);width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:background 0.2s}
+.modal-close:hover{background:var(--off-white)}
+.modal-close svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+.modal-body{padding:24px 28px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.detail-item{display:flex;flex-direction:column;gap:3px}
+.detail-item.full{grid-column:1/-1}
+.detail-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-faint)}
+.detail-val{font-size:14px;color:var(--text);font-weight:500}
+.detail-val.members{font-size:13px;font-weight:400;white-space:pre-line;line-height:1.6}
+.modal-footer{padding:0 28px 24px;display:flex;gap:10px}
+.btn-mfull{flex:1;padding:11px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background 0.2s}
+.btn-mfull.approve{background:var(--success);color:#fff}
+.btn-mfull.approve:hover{background:#236040}
+.btn-mfull.reject{background:var(--danger);color:#fff}
+.btn-mfull.reject:hover{background:#a02e22}
+.btn-mfull.neutral{background:var(--off-white);color:var(--text-soft)}
+.btn-mfull.neutral:hover{background:var(--border)}
+.alert-top{display:none;font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:16px;border-left:3px solid}
+.alert-top.success{background:#f0f9f4;color:var(--success);border-color:var(--success)}
+.alert-top.error{background:#fdf2f2;color:var(--danger);border-color:var(--danger)}
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <div class="topbar-brand">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    </div>
+    <span>LibReserve</span>
+    <span class="staff-badge">STAFF</span>
+  </div>
+  <div class="topbar-right">
+    <div class="user-pill">
+      <div class="avatar" id="user-avatar">?</div>
+      <span id="user-name">Staff</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign out
+    </button>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="page-header">
+    <div>
+      <h1>Reservation Management</h1>
+      <p>Review, approve, or reject student confab room reservation requests.</p>
+    </div>
+  </div>
+
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Requests</div>
+      <div class="stat-val" id="stat-total">0</div>
+      <div class="stat-sub">all time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending</div>
+      <div class="stat-val" id="stat-pending" style="color:var(--warn)">0</div>
+      <div class="stat-sub">awaiting action</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Approved</div>
+      <div class="stat-val" id="stat-approved" style="color:var(--success)">0</div>
+      <div class="stat-sub">confirmed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Rejected</div>
+      <div class="stat-val" id="stat-rejected" style="color:var(--danger)">0</div>
+      <div class="stat-sub">declined</div>
+    </div>
+  </div>
+
+  <div class="alert-top" id="page-alert"></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('all',this)">All Requests</button>
+    <button class="tab" onclick="switchTab('pending',this)">Pending</button>
+    <button class="tab" onclick="switchTab('approved',this)">Approved</button>
+    <button class="tab" onclick="switchTab('rejected',this)">Rejected</button>
+  </div>
+
+  <div class="filter-row">
+    <input class="search-input" type="text" id="search-input" placeholder="Search by student, room, or code…" oninput="renderTable()"/>
+  </div>
+
+  <div class="res-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Room</th>
+          <th>Student</th>
+          <th>Date & Time</th>
+          <th>Purpose</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="res-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Reservation Details</h3>
+      <button class="modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid" id="detail-grid"></div>
+    </div>
+    <div class="modal-footer" id="detail-footer"></div>
+  </div>
+</div>
+
+<script>
+let session = null;
+let currentFilter = 'all';
+let currentDetail = null;
+
+(function init(){
+  try {
+    session = JSON.parse(sessionStorage.getItem('xu_session') || 'null');
+  } catch(e) { session = null; }
+  if (!session || session.type !== 'staff') {
+    window.location.href = 'login.html';
+    return;
+  }
+  const initials = ((session.fname || 'S')[0] + (session.lname || 'T')[0]).toUpperCase();
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-name').textContent = (session.fname || '') + ' ' + (session.lname || '');
+  updateStats();
+  renderTable();
+})();
+
+function getReservations() {
+  try { return JSON.parse(localStorage.getItem('xu_reservations') || '[]'); } catch(e) { return []; }
+}
+
+function saveReservations(list) {
+  localStorage.setItem('xu_reservations', JSON.stringify(list));
+}
+
+function updateStats() {
+  const all = getReservations();
+  document.getElementById('stat-total').textContent = all.length;
+  document.getElementById('stat-pending').textContent = all.filter(r=>r.status==='pending').length;
+  document.getElementById('stat-approved').textContent = all.filter(r=>r.status==='approved').length;
+  document.getElementById('stat-rejected').textContent = all.filter(r=>r.status==='rejected').length;
+}
+
+function switchTab(filter, el) {
+  currentFilter = filter;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderTable();
+}
+
+function renderTable() {
+  const all = getReservations();
+  const q = document.getElementById('search-input').value.toLowerCase();
+  let filtered = all.filter(r => {
+    if (currentFilter !== 'all' && r.status !== currentFilter) return false;
+    if (q) {
+      const haystack = (r.id + r.roomName + r.studentName + r.purpose + r.studentEmail).toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  }).reverse();
+
+  const tbody = document.getElementById('res-tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><p>No reservations found.</p></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(r => `
+    <tr>
+      <td><b>${r.id}</b></td>
+      <td>${r.roomName}</td>
+      <td>
+        <div style="font-weight:500">${r.studentName}</div>
+        <div style="font-size:11px;color:var(--text-faint)">${r.studentEmail}</div>
+      </td>
+      <td>
+        <div>${r.date}</div>
+        <div style="font-size:12px;color:var(--text-soft)">${r.startTime} – ${r.endTime}</div>
+      </td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.purpose}</td>
+      <td><span class="status-badge status-${r.status}">${r.status}</span></td>
+      <td>
+        <div class="action-btns">
+          <button class="btn-view" onclick="viewDetail('${r.id}')">View</button>
+          ${r.status === 'pending' ? `
+            <button class="btn-approve" onclick="updateStatus('${r.id}','approved')">Approve</button>
+            <button class="btn-reject" onclick="updateStatus('${r.id}','rejected')">Reject</button>
+          ` : ''}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function updateStatus(id, newStatus) {
+  const list = getReservations();
+  const idx = list.findIndex(r => r.id === id);
+  if (idx === -1) return;
+  list[idx].status = newStatus;
+  list[idx].reviewedAt = new Date().toISOString();
+  list[idx].reviewedBy = session.email;
+  saveReservations(list);
+  updateStats();
+  renderTable();
+  closeModal();
+  showPageAlert('success', `Reservation ${id} has been ${newStatus}.`);
+}
+
+function viewDetail(id) {
+  const list = getReservations();
+  currentDetail = list.find(r => r.id === id);
+  if (!currentDetail) return;
+  const r = currentDetail;
+  document.getElementById('detail-grid').innerHTML = `
+    <div class="detail-item"><div class="detail-label">Tracking Code</div><div class="detail-val">${r.id}</div></div>
+    <div class="detail-item"><div class="detail-label">Status</div><div class="detail-val"><span class="status-badge status-${r.status}">${r.status}</span></div></div>
+    <div class="detail-item"><div class="detail-label">Room</div><div class="detail-val">${r.roomName}</div></div>
+    <div class="detail-item"><div class="detail-label">Location</div><div class="detail-val">${r.loc}</div></div>
+    <div class="detail-item"><div class="detail-label">Student Name</div><div class="detail-val">${r.studentName}</div></div>
+    <div class="detail-item"><div class="detail-label">Student Email</div><div class="detail-val">${r.studentEmail}</div></div>
+    <div class="detail-item"><div class="detail-label">School ID</div><div class="detail-val">${r.sid || '—'}</div></div>
+    <div class="detail-item"><div class="detail-label">Date</div><div class="detail-val">${r.date}</div></div>
+    <div class="detail-item"><div class="detail-label">Time</div><div class="detail-val">${r.startTime} – ${r.endTime}</div></div>
+    <div class="detail-item"><div class="detail-label">Purpose</div><div class="detail-val">${r.purpose}</div></div>
+    <div class="detail-item full"><div class="detail-label">Group Members</div><div class="detail-val members">${r.members}</div></div>
+    <div class="detail-item"><div class="detail-label">Submitted</div><div class="detail-val">${new Date(r.submittedAt).toLocaleString()}</div></div>
+  `;
+  const footer = document.getElementById('detail-footer');
+  if (r.status === 'pending') {
+    footer.innerHTML = `
+      <button class="btn-mfull neutral" onclick="closeModal()">Close</button>
+      <button class="btn-mfull reject" onclick="updateStatus('${r.id}','rejected')">Reject</button>
+      <button class="btn-mfull approve" onclick="updateStatus('${r.id}','approved')">Approve</button>
+    `;
+  } else {
+    footer.innerHTML = `<button class="btn-mfull neutral" onclick="closeModal()">Close</button>`;
+  }
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('detail-modal').classList.remove('open');
+}
+
+function showPageAlert(type, text) {
+  const el = document.getElementById('page-alert');
+  el.className = 'alert-top ' + type;
+  el.textContent = text;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+function logout() {
+  sessionStorage.removeItem('xu_session');
+  window.location.href = 'LogIn.html';
+}
+</script>
+</body>
+</html>
