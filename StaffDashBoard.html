@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Staff Portal | Library Confab Reservation</title>
+<link rel="icon" href="images/favicon-32.png" type="image/png" sizes="32x32"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/variables.css"/>
+<link rel="stylesheet" href="css/dashboard-common.css"/>
+<link rel="stylesheet" href="css/staff-dashboard.css"/>
+</head>
+<body>
+<nav class="topbar">
+  <div class="topbar-brand">
+    <div class="logo-mark">
+      <img src="images/xu-logo.png" width="40" height="40" alt="" decoding="async"/>
+    </div>
+    <span>LibReserve</span>
+    <span class="staff-badge" id="role-badge">STAFF</span>
+  </div>
+  <div class="topbar-right">
+    <a class="topbar-link" id="link-student-portal" href="StudentDashBoard.html" style="display:none">Student portal</a>
+    <div class="user-pill">
+      <div class="avatar" id="user-avatar">?</div>
+      <span id="user-name">Staff</span>
+    </div>
+    <button class="logout-btn" type="button" onclick="logout()">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign out
+    </button>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="page-header">
+    <div>
+      <h1>Reservation Management</h1>
+      <p>Review, approve, or reject student confab room reservation requests.</p>
+    </div>
+  </div>
+
+  <p class="desk-local-notice">Reservations stay in <strong>this browser</strong> only. Students and staff should open the site the same way (same link). Click <strong>Refresh list</strong> after new student requests.</p>
+
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Requests</div>
+      <div class="stat-val" id="stat-total">0</div>
+      <div class="stat-sub">all time</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending</div>
+      <div class="stat-val" id="stat-pending" style="color:var(--warn)">0</div>
+      <div class="stat-sub">awaiting action</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Approved</div>
+      <div class="stat-val" id="stat-approved" style="color:var(--success)">0</div>
+      <div class="stat-sub">confirmed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Rejected</div>
+      <div class="stat-val" id="stat-rejected" style="color:var(--danger)">0</div>
+      <div class="stat-sub">declined</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Cancelled</div>
+      <div class="stat-val" id="stat-cancelled" style="color:#6b7280">0</div>
+      <div class="stat-sub">by student</div>
+    </div>
+  </div>
+
+  <div class="alert-top" id="page-alert"></div>
+
+  <div class="tabs">
+    <button class="tab active" type="button" onclick="switchTab('all',this)">All Requests</button>
+    <button class="tab" type="button" onclick="switchTab('pending',this)">Pending</button>
+    <button class="tab" type="button" onclick="switchTab('approved',this)">Approved</button>
+    <button class="tab" type="button" onclick="switchTab('rejected',this)">Rejected</button>
+    <button class="tab" type="button" onclick="switchTab('cancelled',this)">Cancelled</button>
+  </div>
+
+  <div class="filter-row">
+    <input class="search-input" type="text" id="search-input" placeholder="Search by student, room, or code…" oninput="renderTable()"/>
+    <div class="desk-sort-wrap">
+      <label for="desk-sort">Submitted</label>
+      <select id="desk-sort" class="desk-sort-select" onchange="renderTable()">
+        <option value="oldest">Oldest → newest</option>
+        <option value="newest">Newest → oldest</option>
+      </select>
+    </div>
+    <button type="button" class="btn-refresh-desk" onclick="updateStats(); renderTable();">Refresh list</button>
+  </div>
+
+  <div class="res-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Room</th>
+          <th>Student</th>
+          <th>Date & Time</th>
+          <th>Purpose</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="res-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Reservation Details</h3>
+      <button class="modal-close" type="button" onclick="closeModal()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid" id="detail-grid"></div>
+    </div>
+    <div class="modal-footer" id="detail-footer"></div>
+  </div>
+</div>
+
+<script src="js/auth-store.js"></script>
+<script src="js/reservation-rules.js"></script>
+<script src="js/staff-dashboard.js"></script>
+</body>
+</html>

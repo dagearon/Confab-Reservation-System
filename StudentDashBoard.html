@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Student Portal | Library Confab Reservation</title>
+<link rel="icon" href="images/favicon-32.png" type="image/png" sizes="32x32"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/variables.css"/>
+<link rel="stylesheet" href="css/dashboard-common.css"/>
+<link rel="stylesheet" href="css/student-dashboard.css"/>
+</head>
+<body>
+<nav class="topbar">
+  <div class="topbar-brand">
+    <div class="logo-mark">
+      <img src="images/xu-logo.png" width="40" height="40" alt="" decoding="async"/>
+    </div>
+    <span>LibReserve</span>
+  </div>
+  <div class="topbar-right">
+    <a class="topbar-link" id="link-staff-desk" href="StaffDashBoard.html" style="display:none">Reservation desk</a>
+    <div class="user-pill">
+      <div class="avatar" id="user-avatar">?</div>
+      <span id="user-name">Student</span>
+    </div>
+    <button class="logout-btn" type="button" onclick="logout()">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign out
+    </button>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="page-header page-header--rooms">
+    <h1>Confab room reservation</h1>
+    <p class="page-header-lead">Library confab rooms 1–6 in the New Building. Each room seats <strong>15</strong> and uses a <strong>discussion-table</strong> layout. Pick a room, then submit a request for staff approval.</p>
+  </div>
+  <div class="tabs">
+    <button class="tab active" type="button" onclick="switchTab('rooms',this)">Confab rooms 1–6</button>
+    <button class="tab" type="button" onclick="switchTab('my-reservations',this)">My Reservations</button>
+    <button class="tab" type="button" onclick="switchTab('track',this)">Track Status</button>
+  </div>
+  <div id="tab-rooms"><div class="rooms-grid" id="rooms-grid"></div></div>
+  <div id="tab-my-reservations" style="display:none">
+    <p class="my-res-hint">You may cancel a <strong>pending</strong> or <strong>approved</strong> booking up to <strong>2 hours before</strong> its start time.</p>
+    <div id="my-res-list"></div>
+  </div>
+  <div id="tab-track" style="display:none">
+    <div class="track-section">
+      <h3>Track Your Reservation</h3>
+      <p>Enter your tracking code to check the current status of your reservation.</p>
+      <div class="track-input-row">
+        <input type="text" id="track-code" placeholder="e.g. REQ-20240001"/>
+        <button class="btn-track" type="button" onclick="trackReservation()">Search</button>
+      </div>
+      <div class="track-result" id="track-result"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="book-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Reserve a Room</h3>
+      <button class="modal-close" type="button" onclick="closeModal()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="selected-room" id="selected-room-label">Confab Room 1</div>
+      <div class="alert-modal error" id="modal-error"></div>
+      <div class="alert-modal success" id="modal-success"></div>
+      <div class="form-grid">
+        <div class="f-group full">
+          <label>Group members</label>
+          <p class="members-format-hint">Example: Maria Santos – 20231234567</p>
+          <textarea id="m-members" rows="4" placeholder="One per line — same format as the example"></textarea>
+        </div>
+        <div class="f-group">
+          <label>Date</label>
+          <input type="date" id="m-date"/>
+        </div>
+        <div class="f-group">
+          <label>Purpose</label>
+          <input type="text" id="m-purpose" placeholder="e.g. Thesis meeting"/>
+        </div>
+        <div class="f-group">
+          <label>Start Time</label>
+          <input type="time" id="m-start"/>
+        </div>
+        <div class="f-group">
+          <label>End Time</label>
+          <input type="time" id="m-end"/>
+        </div>
+        <div class="f-group full">
+          <p id="booking-library-hours-hint" class="members-format-hint"></p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" type="button" onclick="closeModal()">Cancel</button>
+      <button class="btn-reserve" type="button" id="submit-btn" onclick="submitReservation()">Submit Reservation</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="schedule-modal">
+  <div class="modal schedule-modal">
+    <div class="modal-header">
+      <h3 id="schedule-modal-title">Weekly schedule</h3>
+      <button class="modal-close" type="button" onclick="closeScheduleModal()" aria-label="Close">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body schedule-modal-body">
+      <div class="schedule-toolbar">
+        <button type="button" class="schedule-nav-btn" id="schedule-prev-week" aria-label="Previous week">←</button>
+        <span class="schedule-week-label" id="schedule-week-label"></span>
+        <button type="button" class="schedule-nav-btn" id="schedule-next-week" aria-label="Next week">→</button>
+        <button type="button" class="schedule-today-btn" id="schedule-this-week">This week</button>
+      </div>
+      <p class="schedule-legend">Blocks show <strong>approved</strong> occupied time only (no names or purposes). Pending requests are not shown here.</p>
+      <div class="schedule-scroll">
+        <div class="schedule-cal" id="schedule-cal-root"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/auth-store.js"></script>
+<script src="js/reservation-rules.js"></script>
+<script src="js/student-dashboard.js"></script>
+</body>
+</html>

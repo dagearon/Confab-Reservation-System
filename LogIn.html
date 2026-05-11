@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Library Confab Reservation | Xavier Ateneo</title>
+<link rel="icon" href="images/favicon-32.png" type="image/png" sizes="32x32"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/variables.css"/>
+<link rel="stylesheet" href="css/login.css"/>
+</head>
+<body>
+<div class="page">
+  <div class="panel-left">
+    <div class="brand">
+      <div class="xu-logo-panel">
+        <img class="xu-logo" src="images/xu-logo.png" width="280" height="180" alt="Xavier University – Ateneo de Cagayan"/>
+      </div>
+    </div>
+    <div class="panel-tagline">
+      <h1>Book a Room.<br/>Get Things<br/><em>Done.</em></h1>
+      <p>Reserve a confab room in seconds.</p>
+    </div>
+    <div class="panel-dots">
+      <span class="active"></span><span></span><span></span>
+    </div>
+  </div>
+
+  <div class="panel-right">
+    <div class="view active" id="view-main">
+      <div class="fhead">
+        <h2 id="role-label">Student</h2>
+        <p id="role-sub">Sign in with your registered student account</p>
+      </div>
+
+      <div class="tiles">
+        <div class="tile active" onclick="setType('student')">
+          <div class="tile-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" id="role-icon">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+          </div>
+          <span>Student</span>
+        </div>
+        <div class="tile" onclick="setType('staff')">
+          <span>Staff</span>
+        </div>
+        <div class="tile" onclick="setType('admin')">
+          <span>Admin</span>
+        </div>
+      </div>
+
+      <div class="alert error" id="error-msg" style="display:none"></div>
+      <div class="alert success" id="success-msg" style="display:none"></div>
+
+      <div class="field">
+        <label>Email address</label>
+        <div class="input-wrap">
+          <input type="email" id="email" placeholder="name@my.xu.edu.ph" autocomplete="email"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <input type="password" id="password" class="pw-input" placeholder="Your password" autocomplete="current-password"/>
+          <button class="eye-btn" type="button" onclick="togglePw()">
+            <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="remember"/>
+          Remember me
+        </label>
+        <a href="Register.html" class="forgot">Create account</a>
+      </div>
+
+      <button class="btn-login" type="button" id="login-btn" onclick="handleLogin()">Sign in</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/auth-store.js"></script>
+<script src="js/login.js"></script>
+
+</body>
+</html>
