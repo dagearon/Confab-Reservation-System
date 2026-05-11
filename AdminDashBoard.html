@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Admin | LibReserve</title>
+<link rel="icon" href="images/favicon-32.png" type="image/png" sizes="32x32"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/variables.css"/>
+<link rel="stylesheet" href="css/dashboard-common.css"/>
+<link rel="stylesheet" href="css/admin-dashboard.css"/>
+</head>
+<body>
+<nav class="topbar">
+  <div class="topbar-brand">
+    <div class="logo-mark">
+      <img src="images/xu-logo.png" width="40" height="40" alt="" decoding="async"/>
+    </div>
+    <span>LibReserve</span>
+    <span class="admin-badge">ADMIN</span>
+  </div>
+  <div class="topbar-right">
+    <a class="topbar-link" href="StaffDashBoard.html">Reservation desk</a>
+    <div class="user-pill">
+      <div class="avatar" id="user-avatar">?</div>
+      <span id="user-name">Admin</span>
+    </div>
+    <button class="logout-btn" type="button" onclick="logout()">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign out
+    </button>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="page-header">
+    <h1>User management</h1>
+    <p>Create library staff accounts, deactivate access, and grant reservation-desk privileges to student assistants.</p>
+  </div>
+
+  <div class="toolbar">
+    <input type="search" class="search-input-admin" id="search-users" placeholder="Search by name, email, ID, or role…"/>
+    <button type="button" class="btn-primary-admin" onclick="openStaffModal()">+ Add staff account</button>
+  </div>
+
+  <p class="hint">Staff cannot self-register. Students still sign up on the public page; use <strong>Grant desk</strong> to let a student assistant use the reservation management screen.</p>
+
+  <div class="user-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Name</th>
+          <th>Role</th>
+          <th>ID</th>
+          <th>Assistant desk</th>
+          <th>Account</th>
+        </tr>
+      </thead>
+      <tbody id="users-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal-overlay" id="staff-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>New staff account</h3>
+      <button class="modal-close" type="button" onclick="closeStaffModal()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="alert error" id="staff-form-err" style="display:none;margin-bottom:12px"></div>
+      <div class="modal-field">
+        <label>First name</label>
+        <input type="text" id="nfname" autocomplete="given-name"/>
+      </div>
+      <div class="modal-field">
+        <label>Last name</label>
+        <input type="text" id="nlname" autocomplete="family-name"/>
+      </div>
+      <div class="modal-field">
+        <label>Email (@xu.edu.ph or @my.xu.edu.ph)</label>
+        <input type="email" id="nemail" placeholder="name@xu.edu.ph or assistant@my.xu.edu.ph" autocomplete="email"/>
+      </div>
+      <div class="modal-field">
+        <label>Employee ID</label>
+        <input type="text" id="nsid" placeholder="e.g. STAFF-001"/>
+      </div>
+      <div class="modal-field">
+        <label>Temporary password</label>
+        <input type="password" id="npw" placeholder="12+ chars, upper, lower, symbol" minlength="12" autocomplete="new-password"/>
+      </div>
+      <div class="modal-field">
+        <label>Confirm password</label>
+        <input type="password" id="ncpw" autocomplete="new-password"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" style="flex:1;padding:11px;background:var(--off-white);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--text-soft);cursor:pointer" onclick="closeStaffModal()">Cancel</button>
+      <button type="button" class="btn-reserve" style="flex:2;padding:11px;background:var(--navy);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:#fff;cursor:pointer" onclick="submitNewStaff()">Create account</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="reset-staff-pw-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Set staff password</h3>
+      <button class="modal-close" type="button" onclick="closeStaffPwModal()">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="alert error" id="pw-reset-err" style="display:none;margin-bottom:12px"></div>
+      <p class="hint" id="pw-reset-for-email" style="margin:0 0 12px;font-size:14px"></p>
+      <input type="hidden" id="pw-reset-email"/>
+      <div class="modal-field">
+        <label>New password</label>
+        <input type="password" id="rpw" placeholder="12+ chars, upper, lower, symbol" minlength="12" autocomplete="new-password"/>
+      </div>
+      <div class="modal-field">
+        <label>Confirm</label>
+        <input type="password" id="rcpw" autocomplete="new-password"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" style="flex:1;padding:11px;background:var(--off-white);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--text-soft);cursor:pointer" onclick="closeStaffPwModal()">Cancel</button>
+      <button type="button" class="btn-reserve" style="flex:2;padding:11px;background:var(--navy);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:#fff;cursor:pointer" onclick="submitStaffPwReset()">Save password</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/auth-store.js"></script>
+<script src="js/register-validation.js"></script>
+<script src="js/admin-dashboard.js"></script>
+</body>
+</html>

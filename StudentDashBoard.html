@@ -2,116 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Student Portal | Library Confab Reservation</title>
+<link rel="icon" href="images/favicon-32.png" type="image/png" sizes="32x32"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --navy:#1e3a6e;--navy-dark:#162d56;--navy-deeper:#0f2040;--navy-light:#2a4d8f;
-  --off-white:#f0f3f9;--border:#d0d9ec;--text:#1a2a45;--text-soft:#5a6f8f;
-  --text-faint:#9aaabf;--danger:#c0392b;--success:#2d7a4f;--gold:#f5c842;--bg:#eef1f8;
-}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;color:var(--text)}
-.topbar{background:linear-gradient(135deg,var(--navy-light),var(--navy-deeper));padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:64px;box-shadow:0 2px 20px rgba(14,32,64,0.2);position:sticky;top:0;z-index:100}
-.topbar-brand{display:flex;align-items:center;gap:12px}
-.topbar-brand .logo-mark{width:36px;height:36px;background:rgba(255,255,255,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center}
-.topbar-brand .logo-mark svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8}
-.topbar-brand span{font-family:'DM Serif Display',serif;font-size:18px;color:#fff}
-.topbar-right{display:flex;align-items:center;gap:16px}
-.user-pill{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);padding:7px 14px;border-radius:30px}
-.user-pill .avatar{width:28px;height:28px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--navy-deeper)}
-.user-pill span{font-size:13px;color:rgba(255,255,255,0.9);font-weight:500}
-.logout-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);padding:7px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.85);cursor:pointer;transition:background 0.2s}
-.logout-btn:hover{background:rgba(255,255,255,0.18)}
-.logout-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
-.main{max-width:1100px;margin:0 auto;padding:2.5rem 2rem}
-.page-header{margin-bottom:2rem}
-.page-header h1{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text)}
-.page-header p{font-size:14px;color:var(--text-soft);margin-top:4px}
-.tabs{display:flex;gap:4px;margin-bottom:2rem;background:#fff;padding:5px;border-radius:12px;box-shadow:0 1px 8px rgba(14,32,64,0.07);width:fit-content}
-.tab{padding:9px 22px;border-radius:8px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-soft);cursor:pointer;transition:all 0.2s;background:transparent}
-.tab.active{background:var(--navy);color:#fff;box-shadow:0 2px 8px rgba(30,58,110,0.25)}
-.rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}
-.room-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(14,32,64,0.07);transition:transform 0.2s,box-shadow 0.2s;border:1.5px solid transparent}
-.room-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(14,32,64,0.12);border-color:var(--border)}
-.room-card-header{padding:18px 20px 14px;border-bottom:1px solid var(--off-white);display:flex;justify-content:space-between;align-items:flex-start}
-.room-num{font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy)}
-.room-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;background:rgba(45,122,79,0.1);color:var(--success)}
-.room-body{padding:14px 20px 20px}
-.room-loc{font-size:12px;color:var(--text-faint);margin-bottom:10px}
-.room-meta{display:flex;gap:16px;margin-bottom:12px}
-.room-meta-item{font-size:12px;color:var(--text-soft)}
-.room-meta-item strong{display:block;font-size:14px;color:var(--text);font-weight:500}
-.room-features{font-size:12px;color:var(--text-faint);margin-bottom:16px;line-height:1.6}
-.btn-book{width:100%;padding:10px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.2s}
-.btn-book:hover{background:var(--navy-dark)}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,20,40,0.5);z-index:200;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:20px;width:min(560px,100%);box-shadow:0 20px 60px rgba(14,32,64,0.2);animation:slideUp 0.3s ease;max-height:90vh;overflow-y:auto}
-@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal-header{padding:24px 28px 18px;border-bottom:1px solid var(--off-white);display:flex;justify-content:space-between;align-items:center}
-.modal-header h3{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)}
-.modal-close{background:none;border:none;cursor:pointer;color:var(--text-faint);width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:background 0.2s}
-.modal-close:hover{background:var(--off-white)}
-.modal-close svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
-.modal-body{padding:24px 28px}
-.modal-body .selected-room{background:var(--off-white);padding:12px 16px;border-radius:10px;margin-bottom:20px;font-size:13px;font-weight:500;color:var(--navy)}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.form-grid .full{grid-column:1/-1}
-.f-group{display:flex;flex-direction:column;gap:6px}
-.f-group label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-soft)}
-.f-group input,.f-group textarea{padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--text);background:var(--off-white);border:1.5px solid transparent;border-radius:9px;outline:none;transition:border-color 0.2s,background 0.2s;resize:none}
-.f-group input:focus,.f-group textarea:focus{background:#fff;border-color:var(--navy);box-shadow:0 0 0 3px rgba(30,58,110,0.08)}
-.f-group input::placeholder,.f-group textarea::placeholder{color:var(--text-faint)}
-.modal-footer{padding:0 28px 24px;display:flex;gap:10px}
-.btn-cancel{flex:1;padding:11px;background:var(--off-white);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--text-soft);cursor:pointer;transition:background 0.2s}
-.btn-cancel:hover{background:var(--border)}
-.btn-reserve{flex:2;padding:11px;background:var(--navy);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:#fff;cursor:pointer;transition:background 0.2s}
-.btn-reserve:hover{background:var(--navy-dark)}
-.btn-reserve:disabled{opacity:0.6;cursor:not-allowed}
-.alert-modal{display:none;font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:14px;border-left:3px solid}
-.alert-modal.error{background:#fdf2f2;color:var(--danger);border-color:var(--danger)}
-.alert-modal.success{background:#f0f9f4;color:var(--success);border-color:var(--success)}
-.empty-state{text-align:center;padding:3rem;color:var(--text-faint)}
-.empty-state svg{width:40px;height:40px;stroke:currentColor;fill:none;stroke-width:1.4;margin-bottom:12px}
-.reservation-list{display:flex;flex-direction:column;gap:14px}
-.res-card{background:#fff;border-radius:14px;padding:18px 22px;box-shadow:0 2px 10px rgba(14,32,64,0.06);display:flex;justify-content:space-between;align-items:center;gap:16px}
-.res-info h4{font-size:15px;font-weight:500;color:var(--text);margin-bottom:4px}
-.res-info p{font-size:12px;color:var(--text-soft)}
-.status-badge{font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap}
-.status-pending{background:rgba(245,200,66,0.15);color:#b8860b}
-.status-approved{background:rgba(45,122,79,0.1);color:var(--success)}
-.status-rejected{background:rgba(192,57,43,0.1);color:var(--danger)}
-.track-section{background:#fff;border-radius:16px;padding:28px;max-width:560px;box-shadow:0 2px 12px rgba(14,32,64,0.07)}
-.track-section h3{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:6px}
-.track-section p{font-size:13px;color:var(--text-soft);margin-bottom:20px}
-.track-input-row{display:flex;gap:10px}
-.track-input-row input{flex:1;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--off-white);border:1.5px solid transparent;border-radius:10px;outline:none;transition:border-color 0.2s}
-.track-input-row input:focus{background:#fff;border-color:var(--navy)}
-.btn-track{padding:11px 22px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.2s}
-.btn-track:hover{background:var(--navy-dark)}
-.track-result{display:none;margin-top:18px;padding:16px;background:var(--off-white);border-radius:12px;font-size:13px}
-.tr-row{display:flex;justify-content:space-between;margin-bottom:8px}
-.tr-row:last-child{margin-bottom:0}
-.tr-label{color:var(--text-soft)}
-.tr-val{font-weight:500;color:var(--text)}
-</style>
+<link rel="stylesheet" href="css/variables.css"/>
+<link rel="stylesheet" href="css/dashboard-common.css"/>
+<link rel="stylesheet" href="css/student-dashboard.css"/>
 </head>
 <body>
 <nav class="topbar">
   <div class="topbar-brand">
     <div class="logo-mark">
-      <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      <img src="images/xu-logo.png" width="40" height="40" alt="" decoding="async"/>
     </div>
     <span>LibReserve</span>
   </div>
   <div class="topbar-right">
+    <a class="topbar-link" id="link-staff-desk" href="StaffDashBoard.html" style="display:none">Reservation desk</a>
     <div class="user-pill">
       <div class="avatar" id="user-avatar">?</div>
       <span id="user-name">Student</span>
     </div>
-    <button class="logout-btn" onclick="logout()">
+    <button class="logout-btn" type="button" onclick="logout()">
       <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Sign out
     </button>
@@ -119,24 +32,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;colo
 </nav>
 
 <div class="main">
-  <div class="page-header">
-    <h1>Confab Room Reservation</h1>
-    <p>Browse available rooms and make a reservation for your group study session.</p>
+  <div class="page-header page-header--rooms">
+    <h1>Confab room reservation</h1>
+    <p class="page-header-lead">Library confab rooms 1–6 in the New Building. Each room seats <strong>15</strong> and uses a <strong>discussion-table</strong> layout. Pick a room, then submit a request for staff approval.</p>
   </div>
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('rooms',this)">Available Rooms</button>
-    <button class="tab" onclick="switchTab('my-reservations',this)">My Reservations</button>
-    <button class="tab" onclick="switchTab('track',this)">Track Status</button>
+    <button class="tab active" type="button" onclick="switchTab('rooms',this)">Confab rooms 1–6</button>
+    <button class="tab" type="button" onclick="switchTab('my-reservations',this)">My Reservations</button>
+    <button class="tab" type="button" onclick="switchTab('track',this)">Track Status</button>
   </div>
   <div id="tab-rooms"><div class="rooms-grid" id="rooms-grid"></div></div>
-  <div id="tab-my-reservations" style="display:none"><div id="my-res-list"></div></div>
+  <div id="tab-my-reservations" style="display:none">
+    <p class="my-res-hint">You may cancel a <strong>pending</strong> or <strong>approved</strong> booking up to <strong>2 hours before</strong> its start time.</p>
+    <div id="my-res-list"></div>
+  </div>
   <div id="tab-track" style="display:none">
     <div class="track-section">
       <h3>Track Your Reservation</h3>
       <p>Enter your tracking code to check the current status of your reservation.</p>
       <div class="track-input-row">
         <input type="text" id="track-code" placeholder="e.g. REQ-20240001"/>
-        <button class="btn-track" onclick="trackReservation()">Search</button>
+        <button class="btn-track" type="button" onclick="trackReservation()">Search</button>
       </div>
       <div class="track-result" id="track-result"></div>
     </div>
@@ -147,7 +63,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;colo
   <div class="modal">
     <div class="modal-header">
       <h3>Reserve a Room</h3>
-      <button class="modal-close" onclick="closeModal()">
+      <button class="modal-close" type="button" onclick="closeModal()">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -157,8 +73,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;colo
       <div class="alert-modal success" id="modal-success"></div>
       <div class="form-grid">
         <div class="f-group full">
-          <label>Group Members</label>
-          <textarea id="m-members" rows="3" placeholder="List other group members (Name – School ID), one per line."></textarea>
+          <label>Group members</label>
+          <p class="members-format-hint">Example: Maria Santos – 20231234567</p>
+          <textarea id="m-members" rows="4" placeholder="One per line — same format as the example"></textarea>
         </div>
         <div class="f-group">
           <label>Date</label>
@@ -176,174 +93,43 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);min-height:100vh;colo
           <label>End Time</label>
           <input type="time" id="m-end"/>
         </div>
+        <div class="f-group full">
+          <p id="booking-library-hours-hint" class="members-format-hint"></p>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-reserve" id="submit-btn" onclick="submitReservation()">Submit Reservation</button>
+      <button class="btn-cancel" type="button" onclick="closeModal()">Cancel</button>
+      <button class="btn-reserve" type="button" id="submit-btn" onclick="submitReservation()">Submit Reservation</button>
     </div>
   </div>
 </div>
 
-<script>
-const rooms = [
-  {n:1,loc:'5th Floor Annex – Large',cap:12,min:6,feat:'LED Screen, Whiteboard, Conference Phone'},
-  {n:2,loc:'5th Floor Annex – Medium',cap:8,min:4,feat:'Whiteboard, HDMI Display'},
-  {n:3,loc:'4th Floor Annex – Small',cap:4,min:2,feat:'TV Monitor, Small Whiteboard'},
-  {n:4,loc:'4th Floor Annex – Large',cap:15,min:8,feat:'LED Screen, Video Conference, Whiteboard'},
-  {n:5,loc:'3rd Floor Annex – Medium',cap:6,min:3,feat:'HDMI Display, Whiteboard'},
-  {n:6,loc:'3rd Floor Annex – Small',cap:5,min:2,feat:'TV Monitor, WiFi'}
-];
-
-let session = null;
-let selectedRoom = null;
-
-(function init(){
-  try {
-    session = JSON.parse(sessionStorage.getItem('xu_session') || 'null');
-  } catch(e) { session = null; }
-  if (!session || session.type !== 'student') {
-    window.location.href = 'login.html';
-    return;
-  }
-  const initials = ((session.fname || 'S')[0] + (session.lname || 'T')[0]).toUpperCase();
-  document.getElementById('user-avatar').textContent = initials;
-  document.getElementById('user-name').textContent = (session.fname || '') + ' ' + (session.lname || '');
-  renderRooms();
-})();
-
-function renderRooms() {
-  const grid = document.getElementById('rooms-grid');
-  grid.innerHTML = rooms.map(r => `
-    <div class="room-card">
-      <div class="room-card-header">
-        <div class="room-num">Confab ${r.n}</div>
-        <div class="room-badge">Available</div>
+<div class="modal-overlay" id="schedule-modal">
+  <div class="modal schedule-modal">
+    <div class="modal-header">
+      <h3 id="schedule-modal-title">Weekly schedule</h3>
+      <button class="modal-close" type="button" onclick="closeScheduleModal()" aria-label="Close">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body schedule-modal-body">
+      <div class="schedule-toolbar">
+        <button type="button" class="schedule-nav-btn" id="schedule-prev-week" aria-label="Previous week">←</button>
+        <span class="schedule-week-label" id="schedule-week-label"></span>
+        <button type="button" class="schedule-nav-btn" id="schedule-next-week" aria-label="Next week">→</button>
+        <button type="button" class="schedule-today-btn" id="schedule-this-week">This week</button>
       </div>
-      <div class="room-body">
-        <div class="room-loc">${r.loc}</div>
-        <div class="room-meta">
-          <div class="room-meta-item"><strong>${r.cap}</strong>Max capacity</div>
-          <div class="room-meta-item"><strong>${r.min}</strong>Min group</div>
-        </div>
-        <div class="room-features">${r.feat}</div>
-        <button class="btn-book" onclick="openModal(${r.n})">Book this room</button>
+      <p class="schedule-legend">Blocks show <strong>approved</strong> occupied time only (no names or purposes). Pending requests are not shown here.</p>
+      <div class="schedule-scroll">
+        <div class="schedule-cal" id="schedule-cal-root"></div>
       </div>
     </div>
-  `).join('');
-}
+  </div>
+</div>
 
-function switchTab(name, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  ['rooms','my-reservations','track'].forEach(t => {
-    document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
-  });
-  if (name === 'my-reservations') renderMyReservations();
-}
-
-function openModal(roomNum) {
-  selectedRoom = rooms.find(r => r.n === roomNum);
-  document.getElementById('selected-room-label').textContent = 'Confab ' + roomNum + ' — ' + selectedRoom.loc;
-  document.getElementById('modal-error').style.display = 'none';
-  document.getElementById('modal-success').style.display = 'none';
-  document.getElementById('m-members').value = '';
-  document.getElementById('m-purpose').value = '';
-  document.getElementById('m-date').value = '';
-  document.getElementById('m-start').value = '';
-  document.getElementById('m-end').value = '';
-  document.getElementById('book-modal').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('book-modal').classList.remove('open');
-}
-
-function showModalMsg(type, text) {
-  ['modal-error','modal-success'].forEach(id => { document.getElementById(id).style.display = 'none'; });
-  const el = document.getElementById('modal-' + type);
-  el.textContent = text;
-  el.style.display = 'block';
-}
-
-function submitReservation() {
-  const members = document.getElementById('m-members').value.trim();
-  const date = document.getElementById('m-date').value;
-  const purpose = document.getElementById('m-purpose').value.trim();
-  const start = document.getElementById('m-start').value;
-  const end = document.getElementById('m-end').value;
-  const btn = document.getElementById('submit-btn');
-
-  if (!members) return showModalMsg('error', 'Please list your group members.');
-  if (!date) return showModalMsg('error', 'Please select a date.');
-  if (!start || !end) return showModalMsg('error', 'Please set start and end time.');
-  if (start >= end) return showModalMsg('error', 'End time must be after start time.');
-  if (!purpose) return showModalMsg('error', 'Please state the purpose of your reservation.');
-
-  const code = 'REQ-' + Date.now().toString().slice(-7);
-  const reservations = JSON.parse(localStorage.getItem('xu_reservations') || '[]');
-  reservations.push({
-    id: code, roomNum: selectedRoom.n, roomName: 'Confab ' + selectedRoom.n,
-    loc: selectedRoom.loc, studentName: session.fname + ' ' + session.lname,
-    studentEmail: session.email, sid: session.sid,
-    members, date, startTime: start, endTime: end, purpose,
-    status: 'pending', submittedAt: new Date().toISOString()
-  });
-  localStorage.setItem('xu_reservations', JSON.stringify(reservations));
-
-  btn.textContent = 'Submitting…';
-  btn.disabled = true;
-  setTimeout(() => {
-    btn.textContent = 'Submit Reservation';
-    btn.disabled = false;
-    showModalMsg('success', 'Reservation submitted! Your tracking code: ' + code);
-  }, 1000);
-}
-
-function renderMyReservations() {
-  const all = JSON.parse(localStorage.getItem('xu_reservations') || '[]');
-  const mine = all.filter(r => r.studentEmail === session.email);
-  const container = document.getElementById('my-res-list');
-  if (!mine.length) {
-    container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><p>No reservations yet.</p></div>';
-    return;
-  }
-  container.innerHTML = '<div class="reservation-list">' + mine.reverse().map(r => `
-    <div class="res-card">
-      <div class="res-info">
-        <h4>${r.roomName} <span style="font-size:11px;color:var(--text-faint);font-weight:400">— ${r.loc}</span></h4>
-        <p>${r.date} &nbsp;|&nbsp; ${r.startTime} – ${r.endTime} &nbsp;|&nbsp; Code: <b>${r.id}</b></p>
-      </div>
-      <div class="status-badge status-${r.status}">${r.status}</div>
-    </div>
-  `).join('') + '</div>';
-}
-
-function trackReservation() {
-  const code = document.getElementById('track-code').value.trim().toUpperCase();
-  const all = JSON.parse(localStorage.getItem('xu_reservations') || '[]');
-  const res = all.find(r => r.id === code);
-  const resultEl = document.getElementById('track-result');
-  if (!res) {
-    resultEl.innerHTML = '<div style="color:var(--danger);">Tracking code not found.</div>';
-    resultEl.style.display = 'block';
-    return;
-  }
-  const statusColors = {pending:'#b8860b',approved:'var(--success)',rejected:'var(--danger)'};
-  resultEl.innerHTML = `
-    <div class="tr-row"><span class="tr-label">Room</span><span class="tr-val">${res.roomName}</span></div>
-    <div class="tr-row"><span class="tr-label">Date</span><span class="tr-val">${res.date}</span></div>
-    <div class="tr-row"><span class="tr-label">Time</span><span class="tr-val">${res.startTime} – ${res.endTime}</span></div>
-    <div class="tr-row"><span class="tr-label">Reserved by</span><span class="tr-val">${res.studentName}</span></div>
-    <div class="tr-row"><span class="tr-label">Status</span><span class="tr-val" style="color:${statusColors[res.status]||'#555'};font-weight:600;text-transform:capitalize">${res.status}</span></div>
-  `;
-  resultEl.style.display = 'block';
-}
-
-function logout() {
-  sessionStorage.removeItem('xu_session');
-  window.location.href = 'LogIn.html';
-}
-</script>
+<script src="js/auth-store.js"></script>
+<script src="js/reservation-rules.js"></script>
+<script src="js/student-dashboard.js"></script>
 </body>
 </html>
